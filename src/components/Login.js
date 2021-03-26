@@ -1,27 +1,80 @@
-import React, { useEffect } from "react";
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import { useHistory } from 'react-router';
 
 const Login = () => {
-  // make a post request to retrieve a token from the api
-  // when you have handled the token, navigate to the BubblePage route
+	// make a post request to retrieve a token from the api
+	// when you have handled the token, navigate to the BubblePage route
+	const history = useHistory();
 
-  useEffect(()=>{
-    // make a post request to retrieve a token from the api
-    // when you have handled the token, navigate to the BubblePage route
-  });
-  
-  const error = "";
-  //replace with error state
+	useEffect(() => {
+		// make a post request to retrieve a token from the api
+		// when you have handled the token, navigate to the BubblePage route
+	});
+	const LAMBDA_CREDENTIALS = {
+		username: 'Lambda School',
+		password: 'i<3Lambd4',
+	};
 
-  return (
-    <div>
-      <h1>Welcome to the Bubble App!</h1>
-      <div data-testid="loginForm" className="login-form">
-        <h2>Build login form here</h2>
-      </div>
+	const initialError = '';
+	const initialFormState = {
+		username: '',
+		password: '',
+	};
 
-      <p data-testid="errorMessage" className="error">{error}</p>
-    </div>
-  );
+	const [error, setError] = useState(initialError);
+	const [formState, setFormState] = useState(initialFormState);
+
+	const handleChange = (e) => {
+		const { name, value } = e.target;
+		setFormState({ ...formState, [name]: value });
+	};
+
+	const handleSubmit = (e) => {
+		e.preventDefault();
+
+		axios
+			.post('http://localhost:5000/api/login', /*formState*/ LAMBDA_CREDENTIALS)
+			.then((res) => {
+				setError(initialError);
+				localStorage.setItem('token', JSON.stringify(res.data.payload));
+				history.push('/colors');
+			})
+			.catch((err) => {
+				setError('Username or Password is incorrect.');
+			});
+	};
+
+	return (
+		<div>
+			<h1>Welcome to the Bubble App!</h1>
+			<div data-testid='loginForm' className='login-form'>
+				<form onSubmit={handleSubmit}>
+					<label htmlFor='username'>username</label>
+					<input
+						name='username'
+						type='text'
+						value={formState.username}
+						onChange={handleChange}
+						data-testid='username'
+					/>
+					<label htmlFor='username'>password</label>
+					<input
+						name='password'
+						type='password'
+						value={formState.password}
+						onChange={handleChange}
+						data-testid='password'
+					/>
+					<button type='submit'>login</button>
+				</form>
+			</div>
+
+			<p data-testid='errorMessage' className='error'>
+				{error}
+			</p>
+		</div>
+	);
 };
 
 export default Login;
