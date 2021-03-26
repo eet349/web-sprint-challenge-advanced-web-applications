@@ -7,9 +7,9 @@ jest.mock('../helpers/fetchColors');
 // import userEvent from '@testing-library/user-event';
 // import Login from './Login';
 
-// test('Renders BubblePage without errors', () => {
-// 	render(<BubblePage />);
-// });
+test('Renders BubblePage without errors', () => {
+	render(<BubblePage />);
+});
 
 test('Fetches data and renders the bubbles on mounting', async () => {
 	console.log('mockAxios', mockFetchColors);
